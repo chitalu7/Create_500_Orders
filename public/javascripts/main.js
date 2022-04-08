@@ -1,4 +1,41 @@
+// instantiate current order object
+let currentOrder = {};
+currentOrder.StoreID = "dummy";
 
+//define possible values for order attributes
+const possibleStoreIDs = [98053 , 98007, 98077, 98055, 98011, 98046];
+const possibleCdIDs = [123456, 123654, 321456, 321654, 654123, 654321, 543216, 354126, 621453, 623451];
+
+//generate new random values and assign to currentOrder
+function createOrder() {
+    let storeIDIndex = Math.floor(Math.random() * (6));
+    currentOrder.StoreID = possibleCdIDs[storeIDIndex];
+    currentOrder.SalesPersonID = (Math.floor(Math.random() * (4)) + 1) + (4 * storeIDIndex);
+    let cdIDIndex =  Math.floor(Math.random() * (10));
+    currentOrder.CdID = possibleCdIDs[cdIDIndex];
+    currentOrder.PricePaid =  Math.floor(Math.random() * (11)) + 5;
+    currentOrder.Date = new Date();
+};
+
+//display current order values
+function displayCurrentOrder (){
+    document.getElementById("StoreID").innerHTML = currentOrder.StoreID;
+    document.getElementById("SalesPersonID").innerHTML = currentOrder.SalesPersonID;
+    document.getElementById("CdID").innerHTML = currentOrder.CdID;
+    document.getElementById("PricePaid").innerHTML = currentOrder.PricePaid;
+    document.getElementById("Date").innerHTML = currentOrder.Date;
+};
+
+// wait for DOM to load before adding event listeners
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("buttonCreateOrder").addEventListener("click", function (){
+        createOrder();
+        displayCurrentOrder();
+    });
+});
+
+// Everything commented below is old code from Kurt's movie stuff. Keep for reference if needed, strip out when finished.
+/*
 let movieArray = [];
 
 // define a constructor to create movie objects
@@ -17,6 +54,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // add button events ************************************************************************
     
+// Event listener for create order button
+    
+
     document.getElementById("buttonAdd").addEventListener("click", function () {
         let newMovie = new MovieObject(document.getElementById("title").value, 
         document.getElementById("year").value, selectedGenre);
@@ -147,6 +187,7 @@ function deleteMovie(ID) {
     // });
    
 }
+*/
 
 
   
