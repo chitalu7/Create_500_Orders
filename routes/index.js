@@ -26,7 +26,6 @@ router.get('/', function(req, res, next) {
 router.post('/AddOrder', function(req, res) {
   const newOrder = req.body;  // get the object from the req object sent from browser
   console.log(newOrder);
-  ServerOrderArray.push(newOrder);  // add it to our "DB"  (array)
   /*fileManager.write();*/
 
   // prepare a reply to the browser
@@ -37,7 +36,29 @@ router.post('/AddOrder', function(req, res) {
   res.end(JSON.stringify(response)); // send reply
 });
 
+/* Add one new Order and log to file */
+router.post('/AddOrderSave', function(req, res) {
+  const newOrder = req.body;  // get the object from the req object sent from browser
+  console.log(newOrder);
+  fileManager.write(newOrder); //send new order to file manager for writing
+
+  // prepare a reply to the browser
+  var response = {
+    status  : 200,
+    success : 'Added and Saved Successfully'
+  }
+  res.end(JSON.stringify(response)); // send reply
+});
+
 module.exports = router;
+
+fileManager  = {
+  write: function(orderToWrite) {
+    console.log(orderToWrite);
+    let data = JSON.stringify(orderToWrite);    // take our object data and make it writeable
+    fs.appendFileSync('ordersData.json', data + ",\n");  // write it, including a comma spearator and newline character
+  },
+}
 
 
 // Everything commented below is old code from Kurt's movie stuff. Keep for reference if needed, strip out when finished.

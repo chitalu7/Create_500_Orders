@@ -3,7 +3,6 @@
 
 // instantiate current order object
 let currentOrder = {};
-currentOrder.StoreID = "dummy";
 
 //define possible values for order attributes
 const possibleStoreIDs = [98053 , 98007, 98077, 98055, 98011, 98046];
@@ -20,14 +19,16 @@ let OrderObject = function (storeID, salesPersonID, cdID, pricePaid, date){
 
 // wait for DOM to load before adding event listeners
 document.addEventListener("DOMContentLoaded", function () {
-    createOrder();
+    
 
     document.getElementById("buttonCreateOrder").addEventListener("click", function (){
+        createOrder();
         displayCurrentOrder();
     });
 
     // assigns property values to new order object
     document.getElementById("buttonSubmitOne").addEventListener("click", function() {
+        createOrder();
         let newOrder = new OrderObject(currentOrder.StoreID, currentOrder.SalesPersonID,
             currentOrder.CdID, currentOrder.PricePaid, currentOrder.Date);    
     
@@ -54,15 +55,47 @@ document.addEventListener("DOMContentLoaded", function () {
             contentType: "application/json; charset=utf-8",
             success: function(result) {
                 console.log(result);
-                createOrder();
             }
 
         });
 
     });
+    document.getElementById("buttonSubmit500").addEventListener("click", function() {
+        let orderDate =  new Date();
+        let minutesToAdd = 0;
+        for (let i = 0; i < 500; i++) {
+            orderDate.setTime(orderDate.getTime() + (minutesToAdd * 60000));
+            createOrder();
+            let newOrder = new OrderObject(currentOrder.StoreID, currentOrder.SalesPersonID,
+                currentOrder.CdID, currentOrder.PricePaid, orderDate);    
+            console.log(newOrder);
+            
+            /*  fetch('/AddOrderSave', {
+                method: "POST",
+                body: JSON.stringify(newOrder), 
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+                })
+                .then(response => response.json())
+                .then(json => console.log(json),
+                createOrder()
+                )
+                .catch(err => console.log(err));
+            */
+
+            $.ajax({
+                url : "/AddOrderSave",
+                type : "POST",
+                data: JSON.stringify(newOrder),
+                contentType: "application/json; charset=utf-8",
+                success: function(result) {
+                    console.log(result);
+                }
+            });
+            
+            minutesToAdd = Math.floor(Math.random() * 26) + 5; //increment time by 5-30 minutes
+        }
+    });
 });
-
-
 
 //generate new random values and assign to currentOrder
 function createOrder() {
