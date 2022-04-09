@@ -3,17 +3,46 @@ var express = require('express');
 var router = express.Router();
 var fs = require("fs");
 
+
 // start by creating data so we don't have to type it in each time
-let ServerMovieArray = [];
+let ServerOrderArray = [];
 
-// define a constructor to create movie objects
-let MovieObject = function (pTitle, pYear, pGenre, pMan, pWoman, pURL) {
-    this.ID = Math.random().toString(16).slice(5)  // tiny chance could get duplicates!
-    this.Title = pTitle;
-    this.Year = pYear;
-    this.Genre = pGenre;  // action  comedy  drama  horrow scifi  musical  western
-}
+// define constructor to create an order object
+let OrderObject = function (storeID, salesPersonID, cdID, pricePaid, date){
+  this.StoreID = storeID;
+  this.SalesPersonID = salesPersonID;
+  this.CdID = cdID;
+  this.PricePaid = pricePaid;
+  this.Date = date;
+};
 
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.sendFile('index.html');
+});
+
+/* Add one new Order */
+router.post('/AddOrder', function(req, res) {
+  const newOrder = req.body;  // get the object from the req object sent from browser
+  console.log(newOrder);
+  ServerOrderArray.push(newOrder);  // add it to our "DB"  (array)
+  /*fileManager.write();*/
+
+  // prepare a reply to the browser
+  var response = {
+    status  : 200,
+    success : 'Added Successfully'
+  }
+  res.end(JSON.stringify(response)); // send reply
+});
+
+module.exports = router;
+
+
+// Everything commented below is old code from Kurt's movie stuff. Keep for reference if needed, strip out when finished.
+/* 
+/*
 // my file management code, embedded in an object
 fileManager  = {
 
@@ -37,27 +66,29 @@ fileManager  = {
       fileManager.write();
     }
   },
-  
+  */
+
+  /*
   write: function() {
     let data = JSON.stringify(ServerMovieArray);    // take our object data and make it writeable
     fs.writeFileSync('moviesData.json', data);  // write it
   },
 }
+*/
 
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.sendFile('index.html');
-});
-
-/* GET all Movie data */
+/* GET all Movie data *//*
 router.get('/getAllMovies', function(req, res) {
   fileManager.read();
   res.status(200).json(ServerMovieArray);
 });
+*/
 
 
-/* Add one new Movie */
+
+/*
+
+Add one new Movie 
 router.post('/AddMovie', function(req, res) {
   const newMovie = req.body;  // get the object from the req object sent from browser
   console.log(newMovie);
@@ -69,10 +100,10 @@ router.post('/AddMovie', function(req, res) {
     success : 'Added Successfully'
   }
   res.end(JSON.stringify(response)); // send reply
-});
+});*/
 
 // delete movie
-
+/*
 router.delete('/DeleteMovie/:ID', (req, res) => {
   const ID = req.params.ID;
   let found = false;
@@ -101,6 +132,5 @@ router.delete('/DeleteMovie/:ID', (req, res) => {
     res.end(JSON.stringify(response)); // send reply
   }
 });
+*/
 
-
-module.exports = router;

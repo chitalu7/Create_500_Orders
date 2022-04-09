@@ -1,3 +1,6 @@
+//const { response } = require("express");
+
+
 // instantiate current order object
 let currentOrder = {};
 currentOrder.StoreID = "dummy";
@@ -6,10 +9,66 @@ currentOrder.StoreID = "dummy";
 const possibleStoreIDs = [98053 , 98007, 98077, 98055, 98011, 98046];
 const possibleCdIDs = [123456, 123654, 321456, 321654, 654123, 654321, 543216, 354126, 621453, 623451];
 
+// define constructor to create an order object
+let OrderObject = function (storeID, salesPersonID, cdID, pricePaid, date){
+    this.StoreID = storeID;
+    this.SalesPersonID = salesPersonID;
+    this.CdID = cdID;
+    this.PricePaid = pricePaid;
+    this.Date = date;
+};
+
+// wait for DOM to load before adding event listeners
+document.addEventListener("DOMContentLoaded", function () {
+    createOrder();
+
+    document.getElementById("buttonCreateOrder").addEventListener("click", function (){
+        displayCurrentOrder();
+    });
+
+    // assigns property values to new order object
+    document.getElementById("buttonSubmitOne").addEventListener("click", function() {
+        let newOrder = new OrderObject(currentOrder.StoreID, currentOrder.SalesPersonID,
+            currentOrder.CdID, currentOrder.PricePaid, currentOrder.Date);    
+    
+    console.log(newOrder);
+   
+
+
+   /* fetch('/AddOrder', {
+        method: "POST",
+        body: JSON.stringify(newOrder), 
+        headers: {"Content-type": "application/json; charset=UTF-8"}
+        })
+        .then(response => response.json())
+        .then(json => console.log(json),
+        createOrder()
+        )
+        .catch(err => console.log(err));
+*/
+
+        $.ajax({
+            url : "/AddOrder",
+            type : "POST",
+            data: JSON.stringify(newOrder),
+            contentType: "application/json; charset=utf-8",
+            success: function(result) {
+                console.log(result);
+                createOrder();
+            }
+
+        });
+
+    });
+});
+
+
+
 //generate new random values and assign to currentOrder
 function createOrder() {
     let storeIDIndex = Math.floor(Math.random() * (6));
-    currentOrder.StoreID = possibleCdIDs[storeIDIndex];
+    currentOrder.StoreID = possibleStoreIDs[storeIDIndex];
+    //currentOrder.StoreID = possibleCdIDs[storeIDIndex];
     currentOrder.SalesPersonID = (Math.floor(Math.random() * (4)) + 1) + (4 * storeIDIndex);
     let cdIDIndex =  Math.floor(Math.random() * (10));
     currentOrder.CdID = possibleCdIDs[cdIDIndex];
@@ -26,15 +85,39 @@ function displayCurrentOrder (){
     document.getElementById("Date").innerHTML = currentOrder.Date;
 };
 
-// wait for DOM to load before adding event listeners
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("buttonCreateOrder").addEventListener("click", function (){
-        createOrder();
-        displayCurrentOrder();
-    });
-});
 
 // Everything commented below is old code from Kurt's movie stuff. Keep for reference if needed, strip out when finished.
+
+/*
+  
+document.getElementById("buttonAdd").addEventListener("click", function () {
+    let newMovie = new MovieObject(document.getElementById("title").value, 
+    document.getElementById("year").value, selectedGenre);
+
+    fetch('/AddMovie', {
+        method: "POST",
+        body: JSON.stringify(newMovie),
+        headers: {"Content-type": "application/json; charset=UTF-8"}
+        })
+        .then(response => response.json()) 
+        .then(json => console.log(json),
+        createList()
+        )
+        .catch(err => console.log(err));
+
+    // $.ajax({
+    //     url : "/AddMovie",
+    //     type: "POST",
+    //     data: JSON.stringify(newMovie),
+    //     contentType: "application/json; charset=utf-8",
+    //      success: function (result) {
+    //         console.log(result);
+    //         createList();
+    //     }
+    // });
+   
+});*/
+
 /*
 let movieArray = [];
 
@@ -186,8 +269,5 @@ function deleteMovie(ID) {
     //     }  
     // });
    
-}
-*/
+}*/
 
-
-  
