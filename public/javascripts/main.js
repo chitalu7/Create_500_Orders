@@ -1,5 +1,5 @@
 //const { response } = require("express");
-
+let orderArray = [];
 
 // instantiate current order object
 let currentOrder = {};
@@ -9,7 +9,8 @@ const possibleStoreIDs = [98053 , 98007, 98077, 98055, 98011, 98046];
 const possibleCdIDs = [123456, 123654, 321456, 321654, 654123, 654321, 543216, 354126, 621453, 623451];
 
 // define constructor to create an order object
-let OrderObject = function (storeID, salesPersonID, cdID, pricePaid, date){
+let OrderObject = function (id, storeID, salesPersonID, cdID, pricePaid, date){
+    this.ID = id;
     this.StoreID = storeID;
     this.SalesPersonID = salesPersonID;
     this.CdID = cdID;
@@ -29,13 +30,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // assigns property values to new order object
     document.getElementById("buttonSubmitOne").addEventListener("click", function() {
         createOrder();
-        let newOrder = new OrderObject(currentOrder.StoreID, currentOrder.SalesPersonID,
+        let newOrder = new OrderObject(currentOrder.ID, currentOrder.StoreID, currentOrder.SalesPersonID,
             currentOrder.CdID, currentOrder.PricePaid, currentOrder.Date);    
     
     console.log(newOrder);
 
         $.ajax({
-            url : "/AddOrder",
+            url : "/AddOrderSave",
             type : "POST",
             data: JSON.stringify(newOrder),
             contentType: "application/json; charset=utf-8",
@@ -51,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let i = 0; i < 500; i++) {
             orderDate.setTime(orderDate.getTime() + (minutesToAdd * 60000));
             createOrder();
-            let newOrder = new OrderObject(currentOrder.StoreID, currentOrder.SalesPersonID,
+            let newOrder = new OrderObject(currentOrder.ID, currentOrder.StoreID, currentOrder.SalesPersonID,
                 currentOrder.CdID, currentOrder.PricePaid, orderDate);    
             console.log(newOrder);
 
@@ -72,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //generate new random values and assign to currentOrder
 function createOrder() {
+    currentOrder.ID = this.ID = Math.random().toString(16).slice(5);
     let storeIDIndex = Math.floor(Math.random() * (6));
     currentOrder.StoreID = possibleStoreIDs[storeIDIndex];
     //currentOrder.StoreID = possibleCdIDs[storeIDIndex];
@@ -80,7 +82,7 @@ function createOrder() {
     currentOrder.CdID = possibleCdIDs[cdIDIndex];
     currentOrder.PricePaid =  Math.floor(Math.random() * (11)) + 5;
     currentOrder.Date = new Date();
-};
+}
 
 //display current order values
 function displayCurrentOrder (){
@@ -89,4 +91,4 @@ function displayCurrentOrder (){
     document.getElementById("CdID").innerHTML = currentOrder.CdID;
     document.getElementById("PricePaid").innerHTML = currentOrder.PricePaid;
     document.getElementById("Date").innerHTML = currentOrder.Date;
-};
+}
