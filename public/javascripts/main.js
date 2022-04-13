@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("buttonSubmitOne").addEventListener("click", function() {
         createOrder();
         let newOrder = new OrderObject(currentOrder.ID, currentOrder.StoreID, currentOrder.SalesPersonID,
-            currentOrder.CdID, currentOrder.PricePaid, currentOrder.Date);    
+            currentOrder.CdID, currentOrder.PricePaid, currentOrder.Date.toISOString());    
     
     console.log(newOrder);
 
@@ -46,14 +46,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     });
-    document.getElementById("buttonSubmit500").addEventListener("click", function() {
+    document.getElementById("buttonSubmit10").addEventListener("click", function() {
         let orderDate =  new Date();
         let minutesToAdd = 0;
-        for (let i = 0; i < 500; i++) {
+        for (let i = 0; i < 10; i++) {
             orderDate.setTime(orderDate.getTime() + (minutesToAdd * 60000));
             createOrder();
             let newOrder = new OrderObject(currentOrder.ID, currentOrder.StoreID, currentOrder.SalesPersonID,
-                currentOrder.CdID, currentOrder.PricePaid, orderDate);    
+                currentOrder.CdID, currentOrder.PricePaid, orderDate.toISOString());    
             console.log(newOrder);
 
             $.ajax({
