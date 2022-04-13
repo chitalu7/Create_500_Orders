@@ -117,7 +117,7 @@ function fillUL(data) {
 
     var ul = document.createElement('ul');
    
-    movieArray.forEach(function (element,) {   // use handy array forEach method
+    orderArray.forEach(function (element,) {   // use handy array forEach method
         var li = document.createElement('li');
         li.innerHTML = element.ID + ":  &nbsp &nbsp  &nbsp &nbsp " + 
             element.StoreID + "  &nbsp &nbsp  &nbsp &nbsp " + 
@@ -127,5 +127,5 @@ function fillUL(data) {
             element.Date;
         ul.appendChild(li);
     });
-    divMovieList.appendChild(ul)
+    divOrderList.appendChild(ul)
 }
