@@ -46,10 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     });
-    document.getElementById("buttonSubmit10").addEventListener("click", function() {
+    document.getElementById("buttonSubmit500").addEventListener("click", function() {
         let orderDate =  new Date();
         let minutesToAdd = 0;
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 500; i++) {
             orderDate.setTime(orderDate.getTime() + (minutesToAdd * 60000));
             createOrder();
             let newOrder = new OrderObject(currentOrder.ID, currentOrder.StoreID, currentOrder.SalesPersonID,
