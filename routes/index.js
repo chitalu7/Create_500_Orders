@@ -21,6 +21,18 @@ router.get('/', function(req, res, next) {
   res.sendFile('index.html');
 });
 
+/* GET all orders */
+router.get('/getAllOrders', function(req, res) {
+  // find {  takes values, but leaving it blank gets all}
+  OrderSchema.find({}, (err, AllOrders) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
+    res.status(200).json(AllOrders);
+  });
+});
+
 /* Add one new Order */
 router.post('/AddOrder', function(req, res) {
   const newOrder = req.body;  // get the object from the req object sent from browser

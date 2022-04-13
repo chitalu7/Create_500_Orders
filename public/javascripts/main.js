@@ -69,6 +69,10 @@ document.addEventListener("DOMContentLoaded", function () {
             minutesToAdd = Math.floor(Math.random() * 26) + 5; //increment time by 5-30 minutes
         }
     });
+
+    document.getElementById("buttonLoad").addEventListener("click", function () {
+        createList();      
+    });
 });
 
 //generate new random values and assign to currentOrder
@@ -91,4 +95,37 @@ function displayCurrentOrder (){
     document.getElementById("CdID").innerHTML = currentOrder.CdID;
     document.getElementById("PricePaid").innerHTML = currentOrder.PricePaid;
     document.getElementById("Date").innerHTML = currentOrder.Date;
+}
+
+function createList(){
+    fetch('/getAllOrders')
+    // Handle success
+    .then(response => response.json())  // get the data out of the response object
+    .then( responseData => fillUL(responseData))    //update our array and li's
+    .catch(err => console.log('Request Failed', err)); // Catch errors
+    console.log(responseData);
+}
+
+function fillUL(data) {
+    console.log(data);
+    orderArray = data;
+        // clear prior data
+    var divOrderList = document.getElementById("divOrderList");
+    while (divOrderList.firstChild) {    // remove any old data so don't get duplicates
+        divOrderList.removeChild(divOrderList.firstChild);
+    };
+
+    var ul = document.createElement('ul');
+   
+    movieArray.forEach(function (element,) {   // use handy array forEach method
+        var li = document.createElement('li');
+        li.innerHTML = element.ID + ":  &nbsp &nbsp  &nbsp &nbsp " + 
+            element.StoreID + "  &nbsp &nbsp  &nbsp &nbsp " + 
+            element.SalesPersonID + " &nbsp &nbsp  &nbsp &nbsp  " + 
+            element.CdID + " &nbsp &nbsp  &nbsp &nbsp  " + 
+            element.PricePaid + " &nbsp &nbsp  &nbsp &nbsp  " + 
+            element.Date;
+        ul.appendChild(li);
+    });
+    divMovieList.appendChild(ul)
 }
