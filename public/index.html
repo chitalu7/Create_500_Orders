@@ -9,12 +9,18 @@
   <script src="/javascripts/main.js"></script>
   <link rel="stylesheet" type="text/css" href="stylesheets/index.css" >
 </head>
-
+s
   <body>
 
     <div>
       <div>
         <h2> Generate Orders </h2>
+        
+        <input type="button" value="Click to see all transcations between $12-$15 at Store 98007" id="buttonSalesAtStore"  /><br />  <br />
+        <input type="button" value="Click to see sorted Total Cash Sales by each Salesperson" id="buttonSalesPersonTotalCashSales"  />
+        <br />  <br />
+        <br />  <br />
+
         <input type="button" value="CREATE" id="buttonCreateOrder"  /> <br />
         <label for="StoreID">StoreID:</label>
         <span id="StoreID"></span> <br />
@@ -40,6 +46,11 @@
         <input type="button" value="Load Orders from DB" id="buttonLoad" />
         <div id="textString"> ID: &nbsp &nbsp  &nbsp &nbsp StoreID: &nbsp &nbsp &nbsp &nbsp  SalesPersonID: &nbsp  &nbsp &nbsp  &nbsp CdID:  &nbsp  &nbsp &nbsp  &nbsp Price: &nbsp  &nbsp &nbsp  &nbsp Date:   </div>
         <div id="divOrderList"></div>
+
+      <div id="QueryDisplay" style="visibility: hidden;">
+
+      </div>  
+     
     </div>
 
   </body>

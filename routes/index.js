@@ -15,7 +15,6 @@ let OrderObject = function (storeID, salesPersonID, cdID, pricePaid, date){
   this.Date = date;
 };
 
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.sendFile('index.html');
@@ -67,7 +66,6 @@ router.post('/AddOrderSave', function(req, res) {
     }
   });
 
-
 });
 
 module.exports = router;
@@ -83,8 +81,7 @@ fileManager  = {
 // mongoDB stuff 
 const mongoose = require("mongoose");
 const OrderSchema = require("../orderSchema");
-const dbURI = //connection string
-  "mongodb+srv://bcuser:bcuser@raocluster.39cfj.mongodb.net/OrderDB?retryWrites=true&w=majority";
+const dbURI = "mongodb+srv://jsparrow:Mangorum24@chitalu-cluster00.r6fky.mongodb.net/OrdersDB?retryWrites=true&w=majority";
 //mongoose.set('useFindAndModify', false);
 const options = {
   //reconnectTries: Number.MAX_SAFE_INTEGER,
@@ -99,4 +96,65 @@ mongoose.connect(dbURI, options).then(
     console.log("Error connecting Database instance due to: ", err);
   }
 );
-  
+
+const getSalesPersonAggregate = (req, res , next) => {
+  OrderSchema.aggregate([
+    { '$match': {'SalesPersonID': {'$gt': 0,'$lt': 2}}},
+    { '$group': {'_id': '$SalesPersonID', 'Count' : {'$count':{}}}}
+  ])
+  .then(response => { 
+    res.json({
+      response
+    })
+  })
+  .catch(erro => {
+    res.json({
+      message: 'An error occurred!'
+    })
+  })
+};
+
+
+/* GET all orders */
+// route get transactions from specific store
+router.get('/getSalesInRange', function(req, res){
+ 
+OrderSchema.aggregate([
+  {$match : {PricePaid : {$gt: 12, $lt: 15}, StoreID : {$eq : 98007,}}}
+
+])
+.exec (function (err, salesPerson) {
+  if (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+  console.log(salesPerson);
+  res.status(200).json(salesPerson);
+});
+
+});
+
+// route get total cash sales per salesperson
+
+router.get('/getSalesPersonAggregate', function(req, res) {
+  // find {  takes values, but leaving it blank gets all}
+ // new date generated on date of query
+  var currentDate = new Date();
+
+OrderSchema.aggregate([
+  { $group : { _id: {StoreID : '$StoreID', SalesPersonID : '$SalesPersonID',}, TotalSales: {$sum: "$PricePaid"}}},
+  { $project : {StoreID : '$_id.StoreID', SalesPersonID: '$_id.SalesPersonID', PricePaid: '$TotalSales', _id:0}},
+  { $sort : {PricePaid : -1}},
+  { $set : {Date: currentDate}}
+
+])
+.exec (function (err, salesPerson) {
+  if (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+  console.log(salesPerson);
+  res.status(200).json(salesPerson);
+});
+
+});

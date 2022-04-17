@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("buttonSubmit500").addEventListener("click", function() {
         let orderDate =  new Date();
         let minutesToAdd = 0;
-        for (let i = 0; i < 500; i++) {
+        for (let i = 0; i < 15; i++) {
             orderDate.setTime(orderDate.getTime() + (minutesToAdd * 60000));
             createOrder();
             let newOrder = new OrderObject(currentOrder.ID, currentOrder.StoreID, currentOrder.SalesPersonID,
@@ -68,6 +68,14 @@ document.addEventListener("DOMContentLoaded", function () {
             
             minutesToAdd = Math.floor(Math.random() * 26) + 5; //increment time by 5-30 minutes
         }
+    });
+
+    document.getElementById("buttonSalesAtStore").addEventListener("click", function() {
+        createListOfSalesAtSpecificStore();
+    });
+
+    document.getElementById("buttonSalesPersonTotalCashSales").addEventListener("click", function() {
+        createListOfSalesTotalPerSalesPerson();
     });
 
     document.getElementById("buttonLoad").addEventListener("click", function () {
@@ -106,9 +114,29 @@ function createList(){
     console.log(responseData);
 }
 
+function createListOfSalesAtSpecificStore(){
+    fetch('/getSalesInRange')
+    // Handle success
+    .then(response => response.json())  // get the data out of the response object
+    .then( responseData => fillUL(responseData))    //update our array and li's
+    .catch(err => console.log('Request Failed', err)); // Catch errors
+    console.log(responseData);
+}
+
+function createListOfSalesTotalPerSalesPerson(){
+    fetch('/getSalesPersonAggregate')
+    .then(response => response.json())  // get the data out of the response object
+    .then( responseData => fillTotalCashSalesUL(responseData))    //update our array and li's
+    .catch(err => console.log('Request Failed', err)); // Catch errors
+    console.log(responseData)
+}
+
 function fillUL(data) {
+   // Object.values(data);
     console.log(data);
+   
     orderArray = data;
+    //console.log(typeof orderArray);
         // clear prior data
     var divOrderList = document.getElementById("divOrderList");
     while (divOrderList.firstChild) {    // remove any old data so don't get duplicates
@@ -128,4 +156,48 @@ function fillUL(data) {
         ul.appendChild(li);
     });
     divOrderList.appendChild(ul)
+    
 }
+
+// total cash sales populate div
+function fillTotalCashSalesUL(data) {
+    // Object.values(data);
+     console.log(data);
+
+     // Div container displaying queries
+    var queryDisplay = document.getElementById("QueryDisplay");
+
+    queryDisplay.style.visibility = "visible";
+     
+     queryDisplay.innerHTML = 
+      "<h2>Total Cash Sales Made by Each Sales Person (Sorted by High to Low)</h2>" + 
+      "<div id=\"textString\"> StoreID: &nbsp &nbsp  &nbsp &nbsp " + 
+      "SalesPersonID: &nbsp &nbsp  &nbsp &nbsp " +
+      "Total Cash Sales($): &nbsp  &nbsp &nbsp  &nbsp" + 
+      " As of (Date Today):   </div>" + 
+      "<div id=\"divTotalCashSales\"></div>";
+    
+     orderArray = data;
+     //console.log(typeof orderArray);
+         // clear prior data
+     var divTotalCashSales = document.getElementById("divTotalCashSales");
+     while (divTotalCashSales.firstChild) {    // remove any old data so don't get duplicates
+        divTotalCashSales.removeChild(divTotalCashSales.firstChild);
+     };
+ 
+     var ul = document.createElement('ul');
+    
+     orderArray.forEach(function (element,) {   // use handy array forEach method
+         var li = document.createElement('li');
+         li.innerHTML = 
+             element.StoreID + "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp" +
+             element.SalesPersonID + " &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp " +
+             element.PricePaid + " &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp" + 
+             element.Date;
+         ul.appendChild(li);
+     });
+     divTotalCashSales.appendChild(ul)
+     
+ }
+
+
